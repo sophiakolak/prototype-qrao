@@ -1,4 +1,3 @@
-# This code is part of Qiskit.
 #
 # (C) Copyright IBM 2022.
 #
@@ -20,7 +19,8 @@ import numpy as np
 
 from qiskit.opflow import PrimitiveOp
 
-from .encoding import QuantumRandomAccessEncoding, q2vars_from_var2op
+#from .encoding import QuantumRandomAccessEncoding, q2vars_from_var2op
+import encoding
 
 
 # pylint: disable=too-few-public-methods
@@ -40,7 +40,7 @@ class RoundingContext:
     def __init__(
         self,
         *,
-        encoding: Optional[QuantumRandomAccessEncoding] = None,
+        encoding: Optional[encoding.QuantumRandomAccessEncoding] = None,
         var2op: Optional[Dict[int, Tuple[int, PrimitiveOp]]] = None,
         q2vars: Optional[List[List[int]]] = None,
         trace_values=None,

@@ -16,22 +16,24 @@ from typing import Optional
 
 import numpy as np
 
-from .rounding_common import (
-    RoundingSolutionSample,
-    RoundingScheme,
-    RoundingContext,
-    RoundingResult,
-)
+#from .rounding_common import (
+#    RoundingSolutionSample,
+#    RoundingScheme,
+#    RoundingContext,
+#    RoundingResult,
+#)
+
+import rounding_common as rc
 
 
 # pylint: disable=too-few-public-methods
 
 
-class SemideterministicRoundingResult(RoundingResult):
+class SemideterministicRoundingResult(rc.RoundingResult):
     """Result of semideterministic rounding"""
 
 
-class SemideterministicRounding(RoundingScheme):
+class SemideterministicRounding(rc.RoundingScheme):
     """Semideterministic rounding scheme
 
     This is referred to as "Pauli rounding" in
@@ -48,7 +50,7 @@ class SemideterministicRounding(RoundingScheme):
         super().__init__()
         self.rng = np.random.RandomState(seed)
 
-    def round(self, ctx: RoundingContext) -> SemideterministicRoundingResult:
+    def round(self, ctx: rc.RoundingContext) -> SemideterministicRoundingResult:
         """Perform semideterministic rounding"""
 
         trace_values = ctx.trace_values
@@ -73,7 +75,7 @@ class SemideterministicRounding(RoundingScheme):
         ]
 
         soln_samples = [
-            RoundingSolutionSample(
+            rc.RoundingSolutionSample(
                 x=np.asarray(rounded_vars),
                 probability=1.0,
             )
@@ -81,3 +83,4 @@ class SemideterministicRounding(RoundingScheme):
 
         result = SemideterministicRoundingResult(soln_samples)
         return result
+

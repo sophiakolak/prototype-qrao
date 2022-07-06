@@ -1,4 +1,3 @@
-# This code is part of Qiskit.
 #
 # (C) Copyright IBM 2020, 2022.
 #
@@ -32,9 +31,11 @@ from qiskit_optimization.algorithms import (
 )
 from qiskit_optimization.problems import QuadraticProgram, Variable
 
-from .encoding import QuantumRandomAccessEncoding
-from .rounding_common import RoundingScheme, RoundingContext, RoundingResult
-from .semideterministic_rounding import SemideterministicRounding
+#from .encoding import QuantumRandomAccessEncoding
+import encoding as en
+import rounding_common 
+#from rounding_common import RoundingScheme, RoundingContext, RoundingResult
+#from .semideterministic_rounding import SemideterministicRounding
 
 
 class QuantumRandomAccessOptimizationResult(OptimizationResult):
@@ -49,7 +50,7 @@ class QuantumRandomAccessOptimizationResult(OptimizationResult):
         status: OptimizationResultStatus,
         samples: Optional[List[SolutionSample]],
         relaxed_results: MinimumEigensolverResult,
-        rounding_results: RoundingResult,
+        rounding_results: rounding_common.RoundingResult,
         relaxed_results_offset: float,
         sense: int,
     ) -> None:
@@ -83,7 +84,7 @@ class QuantumRandomAccessOptimizationResult(OptimizationResult):
         return self._relaxed_results
 
     @property
-    def rounding_results(self) -> RoundingResult:
+    def rounding_results(self) -> rounding_common.RoundingResult:
         """Rounding results"""
         return self._rounding_results
 
@@ -121,8 +122,8 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
     def __init__(
         self,
         min_eigen_solver: MinimumEigensolver,
-        encoding: QuantumRandomAccessEncoding,
-        rounding_scheme: Optional[RoundingScheme] = None,
+        encoding: en.QuantumRandomAccessEncoding,
+        rounding_scheme: Optional[rounding_common.RoundingScheme] = None,
     ):
         """
         Args:
@@ -159,12 +160,12 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
         self._min_eigen_solver = min_eigen_solver
 
     @property
-    def encoding(self) -> QuantumRandomAccessEncoding:
+    def encoding(self) -> en.QuantumRandomAccessEncoding:
         """The encoding."""
         return self._encoding
 
     @encoding.setter
-    def encoding(self, encoding: QuantumRandomAccessEncoding) -> None:
+    def encoding(self, encoding:en.QuantumRandomAccessEncoding) -> None:
         """Set the encoding"""
         if encoding.num_qubits == 0:
             raise ValueError(
@@ -184,7 +185,7 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
             )
         return ""
 
-    def solve_relaxed(self) -> Tuple[MinimumEigensolverResult, RoundingContext]:
+    def solve_relaxed(self) -> Tuple[MinimumEigensolverResult, rounding_common.RoundingContext]:
         """Solve the relaxed Hamiltonian given the ``encoding`` provided to the constructor."""
         # Get the ordered list of operators that correspond to each decision
         # variable.  This line assumes the variables are numbered consecutively
@@ -225,7 +226,7 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
         else:
             circuit = None
 
-        rounding_context = RoundingContext(
+        rounding_context = rounding_common.RoundingContext(
             encoding=self.encoding,
             trace_values=trace_values,
             circuit=circuit,
